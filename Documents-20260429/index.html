@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA Geometry Calculator</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background: #f4f4f9; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
+        select, input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #0078d4; color: white; border: none; cursor: pointer; }
+        button:hover { background: #005a9e; }
+        #result { font-weight: bold; color: #0078d4; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Kalkulator Figur</h2>
+        <select id="shape" onchange="updateInputs()">
+            <option value="square">Kwadrat (Pole)</option>
+            <option value="triangle">Trójkąt (Pole)</option>
+            <option value="circle">Koło (Pole)</option>
+        </select>
+
+        <div id="inputs">
+            <input type="number" id="val1" placeholder="Bok a">
+            <input type="number" id="val2" style="display:none;" placeholder="Wysokość h">
+        </div>
+
+        <button onclick="calculate()">Oblicz</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function updateInputs() {
+            const shape = document.getElementById('shape').value;
+            const v2 = document.getElementById('val2');
+            const v1 = document.getElementById('val1');
+            
+            if (shape === 'triangle') {
+                v1.placeholder = "Podstawa a";
+                v2.style.display = 'block';
+            } else if (shape === 'circle') {
+                v1.placeholder = "Promień r";
+                v2.style.display = 'none';
+            } else {
+                v1.placeholder = "Bok a";
+                v2.style.display = 'none';
+            }
+        }
+
+        function calculate() {
+            const shape = document.getElementById('shape').value;
+            const v1 = parseFloat(document.getElementById('val1').value);
+            const v2 = parseFloat(document.getElementById('val2').value);
+            let area = 0;
+
+            if (shape === 'square') area = v1 * v1;
+            if (shape === 'triangle') area = 0.5 * v1 * v2;
+            if (shape === 'circle') area = Math.PI * Math.pow(v1, 2);
+
+            document.getElementById('result').innerText = isNaN(area) ? "Wpisz poprawne dane" : "Wynik: " + area.toFixed(2);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA Geometry Calculator</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; background: #f4f4f9; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 320px; }
+        select, input, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { background: #0078d4; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #005a9e; }
+        #result { font-weight: bold; color: #0078d4; text-align: center; margin-top: 15px; font-size: 1.1em; }
+        .version { color: #888; font-size: 0.8em; text-align: center; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="version">Version 2 (Azure API Ready)</div>
+        <h2>Kalkulator Figur</h2>
+        
+        <select id="shape" onchange="updateInputs()">
+            <option value="square">Kwadrat (Pole)</option>
+            <option value="triangle">Trójkąt (Pole)</option>
+            <option value="circle">Koło (Pole)</option>
+            <option value="rectangle">Prostokąt (Pole)</option>
+        </select>
+
+        <div id="inputs">
+            <input type="number" id="val1" placeholder="Bok a">
+            <input type="number" id="val2" style="display:none;" placeholder="Wysokość h">
+        </div>
+
+        <button onclick="calculate()">Oblicz</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function updateInputs() {
+            const shape = document.getElementById('shape').value;
+            const v1 = document.getElementById('val1');
+            const v2 = document.getElementById('val2');
+            
+            v2.style.display = 'none'; // Domyślnie ukryj drugie pole
+
+            if (shape === 'square') {
+                v1.placeholder = "Bok a";
+            } else if (shape === 'triangle') {
+                v1.placeholder = "Podstawa a";
+                v2.placeholder = "Wysokość h";
+                v2.style.display = 'block';
+            } else if (shape === 'circle') {
+                v1.placeholder = "Promień r";
+            } else if (shape === 'rectangle') {
+                v1.placeholder = "Szerokość";
+                v2.placeholder = "Wysokość";
+                v2.style.display = 'block';
+            }
+        }
+
+        async function calculate() {
+            const shape = document.getElementById('shape').value;
+            const val1 = parseFloat(document.getElementById('val1').value);
+            const val2 = parseFloat(document.getElementById('val2').value);
+            
+            // Mapowanie danych na format oczekiwany przez Python Function App
+            let data = {};
+            if (shape === 'square') data = { side: val1 };
+            else if (shape === 'triangle') data = { base: val1, height: val2 };
+            else if (shape === 'circle') data = { radius: val1 };
+            else if (shape === 'rectangle') data = { width: val1, height: val2 };
+
+            const apiUrl = 'https://sbacalculatearea-f9cah4fdctgpftcr.uksouth-01.azurewebsites.net/api/CalculateArea';
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shape: shape, data: data })
+                });
+
+                if (!response.ok) throw new Error("Błąd serwera");
+
+                const result = await response.json();
+                document.getElementById('result').innerText = "Wynik: " + result.area.toFixed(2);
+            } catch (error) {
+                document.getElementById('result').innerText = "Błąd połączenia z API";
+                console.error("Szczegóły błędu:", error);
+            }
+        }
+    </script>
+</body>
+</html>
