@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geometri Hesaplayıcı</title>
+    <title>Geometry Calculator</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f9; }
         .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 400px; }
@@ -14,24 +14,24 @@
 </head>
 <body>
     <div class="container">
-        <h2>Geometri Alan Hesaplama</h2>
-        <label for="shape">Şekil Seçin:</label>
+        <h2>Geometry Area Calculator</h2>
+        <label for="shape">Select Shape:</label>
         <select id="shape" onchange="toggleInputs()">
-            <option value="square">Kare</option>
-            <option value="circle">Daire</option>
+            <option value="square">Square</option>
+            <option value="circle">Circle</option>
         </select>
 
         <div id="squareInput">
-            <label for="side">Kenar Uzunluğu:</label>
+            <label for="side">Side Length:</label>
             <input type="number" id="side" value="5">
         </div>
 
         <div id="circleInput" style="display:none;">
-            <label for="radius">Yarıçap:</label>
+            <label for="radius">Radius:</label>
             <input type="number" id="radius" value="5">
         </div>
 
-        <button onclick="calculate()">Hesapla</button>
+        <button onclick="calculate()">Calculate</button>
         <div id="result"></div>
     </div>
 
@@ -53,10 +53,9 @@
             }
 
             const resultDiv = document.getElementById('result');
-            resultDiv.innerText = "Hesaplanıyor...";
+            resultDiv.innerText = "Calculating...";
 
             try {
-                // Azure Function tetikleyici URL adresiniz buraya POST isteği atacak şekilde entegre edilmiştir.
                 const response = await fetch('https://geometry-calc-backend-dcy-b0cjdkb2bdb6c0fc.swedencentral-01.azurewebsites.net/api/CalculateArea', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -65,12 +64,12 @@
 
                 const data = await response.json();
                 if (data.result !== undefined) {
-                    resultDiv.innerText = `Sonuç: ${data.result}`;
+                    resultDiv.innerText = `Result: ${data.result}`;
                 } else {
-                    resultDiv.innerText = `Hata: ${data.error}`;
+                    resultDiv.innerText = `Error: ${data.error}`;
                 }
             } catch (error) {
-                resultDiv.innerText = "API bağlantı hatası oluştu.";
+                resultDiv.innerText = "API connection error occurred.";
             }
         }
     </script>
