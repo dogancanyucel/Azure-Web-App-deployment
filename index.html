@@ -56,7 +56,7 @@
             resultDiv.innerText = "Hesaplanıyor...";
 
             try {
-                // DIKKAT: Aşağıdaki tırnak içerisine 1. Adımda kopyaladığınız kendi Azure Function URL'nizi yapıştırın!
+                // Azure Function tetikleyici URL adresiniz buraya POST isteği atacak şekilde entegre edilmiştir.
                 const response = await fetch('https://geometry-calc-backend-dcy-b0cjdkb2bdb6c0fc.swedencentral-01.azurewebsites.net/api/CalculateArea', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
